@@ -1,4 +1,10 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>  
+<%@page import="kr.ac.sungkyul.mysite.vo.BoardVo"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,16 +14,7 @@
 </head>
 <body>
 	<div id="container">
-		<div id="header">
-			<h1>MySite</h1>
-			<ul>
-				<li><a href="">로그인</a><li>
-				<li><a href="">회원가입</a><li>
-				<li><a href="">회원정보수정</a><li>
-				<li><a href="">로그아웃</a><li>
-				<li>님 안녕하세요 ^^;</li>
-			</ul>
-		</div>
+			<c:import url='/WEB-INF/views/include/header.jsp'/>
 		<div id="content">
 			<div id="board">
 				<form id="search_form" action="" method="post">
@@ -32,47 +29,55 @@
 						<th>조회수</th>
 						<th>작성일</th>
 						<th>&nbsp;</th>
-					</tr>				
+					</tr>	
+	<c:set var="countList" value="${fn:length(list)}"/>
+               <c:forEach var='vo' items='${list}' varStatus='s'>
 					<tr>
-						<td>3</td>
-						<td><a href="">세 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-10-11 12:04:20</td>
-						<td><a href="" class="del">삭제</a></td>
+						<td>[${countList-s.index}]</td>
+						<td><a href="/mysite/board?a=view&no=${ vo.no}">${vo.title}</a></td>
+						<td>${vo.name}</td>
+						<td>${vo.viewCount}</td>
+						<td>${vo.regDate}</td>
+						<c:if test='${authUser.no==vo.userNo }'>
+						<td><a href="/mysite/board?a=delete&no=${vo.no }" class="del">삭제</a></td>
+						</c:if>
 					</tr>
-					<tr>
-						<td>2</td>
-						<td><a href="">두 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-10-02 12:04:12</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td><a href="">첫 번째 글입니다.</a></td>
-						<td>안대혁</td>
-						<td>3</td>
-						<td>2015-09-25 07:24:32</td>
-						<td><a href="" class="del">삭제</a></td>
-					</tr>
+					  </c:forEach>
+					
 				</table>
+				
+				<!-- begin:paging -->
+				<div class="pager">
+					<ul>
+						<li><a href="/mysite/board?a=list&page=${biginPage-1 }">◀</a></li>
+						
+						<c:forEach begin='${biginPage }' end='${endPage }' step='1' var='i'>
+						<c:choose>
+						<c:when test='${currentPage == i }'>
+						<li class="selected">${i }</li>
+						</c:when>
+						<c:otherwise>
+						<li><a href="/mysite/board?a=list&page=${i }">${i }</a></li>
+						</c:otherwise>
+						</c:choose>
+						</c:forEach>
+						
+						<c:if test='${endPage <total }'>
+						<li><a href="/mysite/board?a=list&page=${endpage+1 }">▶</a></li>
+						</c:if>
+					</ul>
+				</div>
+				<!-- end:paging -->
+				<c:if test = '${not empty sessionScope.authUser}'>
 				<div class="bottom">
-					<a href="" id="new-book">글쓰기</a>
-				</div>				
+					<a href="/mysite/board?a=writeform" id="new-book">글쓰기</a>
+				</div>
+				</c:if>
+								
 			</div>
 		</div>
-		<div id="navigation">
-			<ul>
-				<li><a href="">안대혁</a></li>
-				<li><a href="">방명록</a></li>
-				<li><a href="">게시판</a></li>
-			</ul>
-		</div>
-		<div id="footer">
-			<p>(c)opyright 2014 </p>
-		</div>
+		<c:import url='/WEB-INF/views/include/navi.jsp'/>
+		<c:import url='/WEB-INF/views/include/footer.jsp'/>
 	</div>
 </body>
 </html>
