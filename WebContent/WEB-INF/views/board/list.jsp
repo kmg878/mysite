@@ -30,8 +30,8 @@
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>	
-	<c:set var="countList" value="${fn:length(list)}"/>
-               <c:forEach var='vo' items='${list}' varStatus='s'>
+	<c:set var="countList" value="${fn:length(list2)}"/>
+               <c:forEach var='vo' items='${list2}' varStatus='s'>
 					<tr>
 						<td>[${countList-s.index}]</td>
 						<td><a href="/mysite/board?a=view&no=${ vo.no}">${vo.title}</a></td>
@@ -49,9 +49,9 @@
 				<!-- begin:paging -->
 				<div class="pager">
 					<ul>
-						<li><a href="/mysite/board?a=list&page=${biginPage-1 }">◀</a></li>
+						<li><a href="/mysite/board?a=list&page=${beginPage-1 }">◀</a></li>
 						
-						<c:forEach begin='${biginPage }' end='${endPage }' step='1' var='i'>
+						<c:forEach begin='${beginPage }' end='${endPage }' step='1' var='i'>
 						<c:choose>
 						<c:when test='${currentPage == i }'>
 						<li class="selected">${i }</li>
@@ -63,7 +63,7 @@
 						</c:forEach>
 						
 						<c:if test='${endPage <total }'>
-						<li><a href="/mysite/board?a=list&page=${endpage+1 }">▶</a></li>
+						<li><a href="/mysite/board?a=list&page=${endPage+1 }">▶</a></li>
 						</c:if>
 					</ul>
 				</div>

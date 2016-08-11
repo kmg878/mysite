@@ -11,6 +11,13 @@ public class BoardVo {
 	private Long userNo;
 	private String regDate;
 	private String name;
+	private Integer pageNo;
+	public Integer getPageNo() {
+		return pageNo;
+	}
+	public void setPageNo(Integer pageNo) {
+		this.pageNo = pageNo;
+	}
 	public Long getNo() {
 		return no;
 	}
@@ -75,7 +82,7 @@ public class BoardVo {
 	public String toString() {
 		return "BoardVo [no=" + no + ", title=" + title + ", content=" + content + ", viewCount=" + viewCount
 				+ ", groupNo=" + groupNo + ", orderNo=" + orderNo + ", depth=" + depth + ", userNo=" + userNo
-				+ ", regDate=" + regDate + ", name=" + name + "]";
+				+ ", regDate=" + regDate + ", name=" + name + ", pageNo=" + pageNo + "]";
 	}
 	
 	
