@@ -46,9 +46,7 @@ public class BoardListFormAction implements Action {
 		if(endPage >total){
 			endPage=total;
 		}
-		System.out.println("beginPage"+beginPage);
-		System.out.println("endPage"+endPage);
-		System.out.println("total"+total);
+		
 	
 		
 		request.setAttribute("beginPage", beginPage);

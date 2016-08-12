@@ -180,6 +180,7 @@ public class BoardDao {
 	
 	
 	
+	
 	public BoardVo get(Long No ){
 		BoardVo vo = null;
 		Connection conn = null;
@@ -188,7 +189,7 @@ public class BoardDao {
 		try{
 			conn=getConnection();
 			
-			String sql ="select no,title,content,user_no from board where no=?";
+			String sql ="select no,title,content,user_no,group_no,depth from board where no=?";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setLong(1,No );
@@ -199,12 +200,16 @@ public class BoardDao {
 				String title = rs.getString(2);
 				String content =rs.getString(3);
 				Long userNo=rs.getLong(4);
+				Long groupNo =rs.getLong(5);
+				int depth = rs.getInt(6);
 				
 				vo = new BoardVo();
 				vo.setNo(no);
 				vo.setTitle(title);
 				vo.setContent(content);
 				vo.setUserNo(userNo);
+				vo.setGroupNo(groupNo);
+				vo.setDepth(depth);
 				
 			}
 			
@@ -227,6 +232,53 @@ public class BoardDao {
 		
 		return vo;
 	}
+	public boolean comment(BoardVo vo) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int count = 0;
+		try {
+
+			conn = getConnection();
+
+			String sql = "insert into board values(seq_board.nextval,?,?,?,"
+						+    "?,nvl((select max(order_no) from board where group_no=? and depth=?),0)+1,?,?,sysdate)";
+
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, vo.getTitle());
+			pstmt.setString(2, vo.getContent());
+			pstmt.setInt(3, vo.getViewCount());
+			
+			pstmt.setLong(4, vo.getGroupNo());
+			pstmt.setLong(5, vo.getGroupNo());
+			pstmt.setInt(6, vo.getDepth());
+			
+			pstmt.setInt(7,vo.getDepth());
+			pstmt.setLong(8,vo.getUserNo());
+			
+			
+			count = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return (count == 1);
+	}
+	
 	public boolean insert(BoardVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -270,7 +322,6 @@ public class BoardDao {
 		}
 		return (count == 1);
 	}
-	
 	public List<BoardVo> getList() {
 		List<BoardVo> list = new ArrayList<BoardVo>();
 
@@ -345,12 +396,12 @@ public class BoardDao {
 		try {
 			conn = getConnection();
 
-			String sql = "select no, title, content, reg_date, view_count, name, user_no, rn"
-					  +" from (select a.*, ROWNUM as rn from (select b.no, b.title, b.content, to_char(b.reg_date, 'yyyy-mm-dd pm hh12:mi:ss') as reg_date, b.view_count, u.NAME, b.user_no"
-					  +"        from board b, users u" 
-					  +"        where b.USER_NO = u.NO"
-					  +"        order by b.REG_DATE desc) a)"
-					  +" where (?-1)*5+1 <= rn  and rn <= ?*5";
+			String sql = "select no,depth, title, content, reg_date, view_count, name, user_no, rn "
+					   +" from (select a.*, ROWNUM as rn from (select b.no, b.title, b.content, to_char(b.reg_date, 'yyyy-mm-dd pm hh12:mi:ss') as reg_date, b.view_count, u.NAME, b.user_no,b.DEPTH "
+					   +"	from board b, users u " 
+					   +"       where b.USER_NO = u.NO"
+					   +"       order by group_no DESC,depth asc, order_no deSC,b.REG_DATE desc) a) "
+					   +"  where (?-1)*5+1 <= rn  and rn <= ?*5";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setInt(1, pageNo);
@@ -360,17 +411,19 @@ public class BoardDao {
 
 			while (rs.next()) {
 				Long no = rs.getLong(1);
-				String title =rs.getString(2);
-				String content =rs.getString(3);
-				String regDate =rs.getString(4);
-				Integer viewCount = rs.getInt(5);
-				String name =rs.getString(6);
-				Long userNo =rs.getLong(7);
+				Integer depth =rs.getInt(2);
+				String title =rs.getString(3);
+				String content =rs.getString(4);
+				String regDate =rs.getString(5);
+				Integer viewCount = rs.getInt(6);
+				String name =rs.getString(7);
+				Long userNo =rs.getLong(8);
 				
 				
 
 				BoardVo vo = new BoardVo();
 				vo.setNo(no);
+				vo.setDepth(depth);
 				vo.setName(name);
 				vo.setTitle(title);
 				vo.setViewCount(viewCount);

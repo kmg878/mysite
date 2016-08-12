@@ -34,7 +34,11 @@
                <c:forEach var='vo' items='${list2}' varStatus='s'>
 					<tr>
 						<td>[${countList-s.index}]</td>
-						<td><a href="/mysite/board?a=view&no=${ vo.no}">${vo.title}</a></td>
+						<td style="text-align:left;padding-left:${(vo.depth)*10}px">
+						<c:if test='${vo.depth>1 }'>
+							<img src="">
+						</c:if>
+						<a href="/mysite/board?a=view&no=${ vo.no}">${vo.title}</a></td>
 						<td>${vo.name}</td>
 						<td>${vo.viewCount}</td>
 						<td>${vo.regDate}</td>

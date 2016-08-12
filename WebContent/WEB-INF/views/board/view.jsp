@@ -35,6 +35,7 @@
                </table>
               
                <div class="bottom">
+                  <a href="/mysite/board?a=commentform&no=${param.no}">답글</a>
                   <a href="/mysite/board?a=list">글목록</a>
                 <c:if test = '${authUser.no ==BoardVo.userNo}'>
                   <a href="/mysite/board?a=modifyform&no=${param.no}">글수정</a>

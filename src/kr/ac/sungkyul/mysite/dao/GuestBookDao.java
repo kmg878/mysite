@@ -104,6 +104,8 @@ public class GuestBookDao {
 		}
 		return (count == 1);
 	}
+	
+	
 
 	public List<GuestBookVo> getList() {
 		List<GuestBookVo> list = new ArrayList<GuestBookVo>();
