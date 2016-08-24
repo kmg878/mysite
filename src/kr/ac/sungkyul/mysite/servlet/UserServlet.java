@@ -27,7 +27,7 @@ public class UserServlet extends HttpServlet {
 		action.execute(request, response);
 		
 		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
 	}
 
 	
